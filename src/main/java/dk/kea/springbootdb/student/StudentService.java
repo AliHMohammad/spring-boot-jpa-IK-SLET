@@ -32,7 +32,6 @@ public class StudentService {
 
         //Hvis den gør, så throw
         if (studentOptional.isPresent()){
-            //throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "email taken");
             throw new IllegalStateException("email taken");
         }
 
@@ -50,7 +49,7 @@ public class StudentService {
     }
 
     @Transactional
-    public void updateStudent(long id, Student updatedStudent) {
+    public Student updateStudent(long id, Student updatedStudent) {
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException(
                         "Student with id " + id + " does not exist"
@@ -58,8 +57,11 @@ public class StudentService {
 
         //Vi bruger dens setter til at opdatere
         //Ændringen gemmer i db'en
+        //HUSK @Transactional på metoden for at det virker
         student.setEmail(updatedStudent.getEmail());
         student.setName(updatedStudent.getName());
+
+        return student;
     }
 
     public Student getSingleStudent(long id) {
