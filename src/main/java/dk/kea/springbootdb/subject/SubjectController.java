@@ -29,7 +29,7 @@ public class SubjectController {
 
     @PostMapping
     public void createSubject(@RequestBody Subject subject) {
-        subject.createSubject(subject);
+       subjectService.createSubject(subject);
     }
 
     @DeleteMapping("/{subjectId}")

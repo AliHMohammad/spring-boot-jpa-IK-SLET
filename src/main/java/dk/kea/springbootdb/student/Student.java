@@ -1,6 +1,7 @@
 package dk.kea.springbootdb.student;
 
 import jakarta.persistence.*;
+import org.springframework.lang.NonNull;
 
 import java.time.LocalDate;
 import java.time.Period;

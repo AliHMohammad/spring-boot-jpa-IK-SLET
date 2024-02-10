@@ -19,6 +19,11 @@ public class Subject {
 
     }
 
+    public Subject(Subject other) {
+        this.title = other.title;
+        this.ECTSPoints = other.ECTSPoints;
+    }
+
     public Subject(String title, int ECTSPoints) {
         this.title = title;
         this.ECTSPoints = ECTSPoints;

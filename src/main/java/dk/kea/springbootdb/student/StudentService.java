@@ -2,8 +2,10 @@ package dk.kea.springbootdb.student;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,16 +26,17 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public void addNewStudent(Student student) {
+    public Student addNewStudent(Student student) {
         //Vi validerer om email allerede eksisterer i databasen.
         Optional<Student> studentOptional = studentRepository.findStudentByEmail(student.getEmail());
 
         //Hvis den gør, så throw
         if (studentOptional.isPresent()){
+            //throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "email taken");
             throw new IllegalStateException("email taken");
         }
 
-        studentRepository.save(student);
+        return studentRepository.save(student);
     }
 
     public void deleteStudent(long studentId) {
