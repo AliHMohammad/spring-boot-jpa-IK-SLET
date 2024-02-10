@@ -3,12 +3,13 @@ package dk.kea.springbootdb.student;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.time.Period;
 
 @Entity
 @Table
 public class Student {
 
-    /*@SequenceGenerator(
+    @SequenceGenerator(
             name = "student_sequence",
             sequenceName = "student_sequence",
             allocationSize = 1
@@ -16,12 +17,16 @@ public class Student {
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
             generator = "student_sequence"
-    )*/
+    )
     @Id
     private long id;
     private String name;
     private String email;
     private LocalDate dateOfBirth;
+
+    //Transient betyder, at den ikke bliver gemt i databasen. Der bliver ikke oprettet en kolonne
+    @Transient
+    private int age;
 
     public Student(long id, String name, String email, LocalDate dateOfBirth) {
         this.id = id;
@@ -38,6 +43,12 @@ public class Student {
         this.name = name;
         this.email = email;
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public Student(String name, String email, String dateOfBirthString) {
+        this.name = name;
+        this.email = email;
+        setDateOfBirth(dateOfBirthString);
     }
 
     public long getId() {
@@ -70,6 +81,15 @@ public class Student {
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public int getAge() {
+        return Period.between(this.dateOfBirth, LocalDate.now()).getYears();
+    }
+
+    private void setDateOfBirth(String dobString) {
+        String[] dateArr = dobString.split("-");
+        this.dateOfBirth = LocalDate.of(Integer.parseInt(dateArr[2]), Integer.parseInt(dateArr[1]), Integer.parseInt(dateArr[0]));
     }
 
     @Override
