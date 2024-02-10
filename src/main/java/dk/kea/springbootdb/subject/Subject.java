@@ -1,10 +1,7 @@
 package dk.kea.springbootdb.subject;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Subject {
@@ -13,7 +10,8 @@ public class Subject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
-    private int ECTSPoints;
+
+    private int ects;
 
     public Subject() {
 
@@ -21,18 +19,18 @@ public class Subject {
 
     public Subject(Subject other) {
         this.title = other.title;
-        this.ECTSPoints = other.ECTSPoints;
+        this.ects = other.ects;
     }
 
-    public Subject(String title, int ECTSPoints) {
+    public Subject(String title, int ects) {
         this.title = title;
-        this.ECTSPoints = ECTSPoints;
+        this.ects = ects;
     }
 
-    public Subject(Long id, String title, int ECTSPoints) {
+    public Subject(Long id, String title, int ects) {
         this.id = id;
         this.title = title;
-        this.ECTSPoints = ECTSPoints;
+        this.ects = ects;
     }
 
     public Long getId() {
@@ -51,12 +49,12 @@ public class Subject {
         this.title = title;
     }
 
-    public int getECTSPoints() {
-        return ECTSPoints;
+    public int getEcts() {
+        return ects;
     }
 
-    public void setECTSPoints(int ECTSPoints) {
-        this.ECTSPoints = ECTSPoints;
+    public void setEcts(int ects) {
+        this.ects = ects;
     }
 
     @Override
@@ -64,10 +62,7 @@ public class Subject {
         return "Subject{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", ECTSPoints=" + ECTSPoints +
+                ", ects=" + ects +
                 '}';
-    }
-
-    public void createSubject(Subject subject) {
     }
 }

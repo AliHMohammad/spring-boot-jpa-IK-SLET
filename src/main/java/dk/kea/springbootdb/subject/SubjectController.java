@@ -2,7 +2,10 @@ package dk.kea.springbootdb.subject;
 
 import dk.kea.springbootdb.student.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -18,22 +21,55 @@ public class SubjectController {
     }
 
     @GetMapping
-    public List<Subject> getSubjects() {
-        return subjectService.getSubjects();
+    public ResponseEntity<List<Subject>> getSubjects() {
+        try {
+            return new ResponseEntity<>(subjectService.getSubjects(), HttpStatus.OK);
+        } catch (Exception e) {
+            HttpStatus httpStatus = e instanceof IllegalStateException ? HttpStatus.NOT_FOUND : HttpStatus.INTERNAL_SERVER_ERROR;
+            throw new ResponseStatusException(httpStatus, e.getMessage());
+        }
     }
 
     @GetMapping("/{subjectId}")
-    public Subject getSingleSubject(@PathVariable("subjectId") long id) {
-        return subjectService.getSingleSubject(id);
+    public ResponseEntity<Subject> getSingleSubject(@PathVariable("subjectId") long id) {
+        try {
+            return new ResponseEntity<>(subjectService.getSingleSubject(id), HttpStatus.OK);
+        } catch (Exception e) {
+            HttpStatus httpStatus = e instanceof IllegalStateException ? HttpStatus.NOT_FOUND : HttpStatus.INTERNAL_SERVER_ERROR;
+            throw new ResponseStatusException(httpStatus, e.getMessage());
+        }
     }
 
     @PostMapping
-    public void createSubject(@RequestBody Subject subject) {
-       subjectService.createSubject(subject);
+    public ResponseEntity<Subject> createSubject(@RequestBody Subject subject) {
+        try {
+            return new ResponseEntity<>(subjectService.createSubject(subject), HttpStatus.CREATED);
+        } catch (Exception e) {
+            HttpStatus httpStatus = e instanceof IllegalStateException ? HttpStatus.BAD_REQUEST : HttpStatus.INTERNAL_SERVER_ERROR;
+            throw new ResponseStatusException(httpStatus, e.getMessage());
+        }
+
     }
 
     @DeleteMapping("/{subjectId}")
-    public void deleteSubject(@PathVariable("subjectId") long id) {
-
+    public ResponseEntity<Void> deleteSubject(@PathVariable("subjectId") long id) {
+        try {
+            subjectService.deleteSubject(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            HttpStatus httpStatus = e instanceof IllegalStateException ? HttpStatus.NOT_FOUND : HttpStatus.INTERNAL_SERVER_ERROR;
+            throw new ResponseStatusException(httpStatus, e.getMessage());
+        }
     }
+
+    @PutMapping("/{subjectId}")
+    public ResponseEntity<Subject> updateSubject(@PathVariable("subjectId") long id, @RequestBody Subject updatedSubject) {
+        try {
+            return new ResponseEntity<>(subjectService.updateSubject(id, updatedSubject), HttpStatus.OK);
+        } catch (Exception e) {
+            HttpStatus httpStatus = e instanceof IllegalStateException ? HttpStatus.NOT_FOUND : HttpStatus.INTERNAL_SERVER_ERROR;
+            throw new ResponseStatusException(httpStatus, e.getMessage());
+        }
+    }
+
 }

@@ -19,6 +19,7 @@ public class Student {
     private LocalDate dateOfBirth;
 
     //Transient betyder, at den ikke bliver gemt i databasen. Der bliver ikke oprettet en kolonne
+    //Fordelen er, at den returnerer age ved get-kald ud fra getAge() metoden.
     @Transient
     private int age;
 
@@ -31,6 +32,12 @@ public class Student {
 
     public Student() {
 
+    }
+
+    public Student(Student other) {
+        this.name = other.name;
+        this.email = other.email;
+        this.dateOfBirth = other.dateOfBirth;
     }
 
     public Student(String name, String email, LocalDate dateOfBirth) {

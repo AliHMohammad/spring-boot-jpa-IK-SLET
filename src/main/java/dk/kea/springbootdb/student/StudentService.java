@@ -35,7 +35,8 @@ public class StudentService {
             throw new IllegalStateException("email taken");
         }
 
-        return studentRepository.save(student);
+        Student studentToCreate = new Student(student);
+        return studentRepository.save(studentToCreate);
     }
 
     public void deleteStudent(long studentId) {
@@ -50,7 +51,7 @@ public class StudentService {
 
     @Transactional
     public Student updateStudent(long id, Student updatedStudent) {
-        Student student = studentRepository.findById(id)
+        Student studentInDb = studentRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException(
                         "Student with id " + id + " does not exist"
                 ));
@@ -58,10 +59,10 @@ public class StudentService {
         //Vi bruger dens setter til at opdatere
         //Ændringen gemmer i db'en
         //HUSK @Transactional på metoden for at det virker
-        student.setEmail(updatedStudent.getEmail());
-        student.setName(updatedStudent.getName());
+        studentInDb.setEmail(updatedStudent.getEmail());
+        studentInDb.setName(updatedStudent.getName());
 
-        return student;
+        return studentInDb;
     }
 
     public Student getSingleStudent(long id) {
