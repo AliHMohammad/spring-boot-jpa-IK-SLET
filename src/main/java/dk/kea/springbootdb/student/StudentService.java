@@ -3,6 +3,7 @@ package dk.kea.springbootdb.student;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -43,5 +44,18 @@ public class StudentService {
         }
 
         studentRepository.deleteById(studentId);
+    }
+
+    @Transactional
+    public void updateStudent(long id, Student updatedStudent) {
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException(
+                        "Student with id " + id + " does not exist"
+                ));
+
+        //Vi bruger dens setter til at opdatere
+        //Ændringen gemmer i db'en
+        student.setEmail(updatedStudent.getEmail());
+        student.setName(updatedStudent.getName());
     }
 }
