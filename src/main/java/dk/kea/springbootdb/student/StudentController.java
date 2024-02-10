@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "api/v1/students")
+@RequestMapping(path = "/api/v1/students")
 public class StudentController {
 
     private final StudentService studentService;
@@ -22,17 +22,22 @@ public class StudentController {
         return studentService.getStudents();
     }
 
+    @GetMapping("/{studentId}")
+    public Student getSingleStudent(@PathVariable("studentId") long id) {
+        return studentService.getSingleStudent(id);
+    }
+
     @PostMapping
     public void registerNewStudent(@RequestBody Student student) {
         studentService.addNewStudent(student);
     }
 
-    @DeleteMapping(path = "{studentId}")
+    @DeleteMapping(path = "/{studentId}")
     public void deleteStudent(@PathVariable("studentId") long id) {
         studentService.deleteStudent(id);
     }
 
-    @PutMapping(path = "{studentId}")
+    @PutMapping(path = "/{studentId}")
     public void updateStudent(@PathVariable("studentId") long id,
                               @RequestBody Student updatedStudent) {
         studentService.updateStudent(id, updatedStudent);

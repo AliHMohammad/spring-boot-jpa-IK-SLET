@@ -9,17 +9,10 @@ import java.time.Period;
 @Table
 public class Student {
 
-    @SequenceGenerator(
-            name = "student_sequence",
-            sequenceName = "student_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "student_sequence"
-    )
+
     @Id
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private String email;
     private LocalDate dateOfBirth;

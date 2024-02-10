@@ -58,4 +58,11 @@ public class StudentService {
         student.setEmail(updatedStudent.getEmail());
         student.setName(updatedStudent.getName());
     }
+
+    public Student getSingleStudent(long id) {
+        return studentRepository.findById(id)
+                .orElseThrow(()-> new IllegalStateException(
+                        "Student with id " + id + " does not exist"
+                ));
+    }
 }
