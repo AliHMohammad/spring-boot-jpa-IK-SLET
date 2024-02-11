@@ -23,6 +23,7 @@ public class Student {
     private LocalDate dateOfBirth;
 
     //Vi bruger @JsonIgnore for at undgå rekursion, når vi tilføjer en student til et subject
+    //En student kan have mange subjects. En subject kan have mange students. ManyToMany
     @JsonIgnore
     @ManyToMany(mappedBy = "enrolledStudents")
     private Set<Subject> subjects = new HashSet<>();

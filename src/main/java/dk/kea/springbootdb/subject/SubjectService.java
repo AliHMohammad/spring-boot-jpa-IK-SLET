@@ -2,6 +2,8 @@ package dk.kea.springbootdb.subject;
 
 import dk.kea.springbootdb.student.Student;
 import dk.kea.springbootdb.student.StudentRepository;
+import dk.kea.springbootdb.teacher.Teacher;
+import dk.kea.springbootdb.teacher.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,10 +16,12 @@ public class SubjectService {
 
     private final SubjectRepository subjectRepository;
     private final StudentRepository studentRepository;
+    private final TeacherRepository teacherRepository;
 
-    public SubjectService(SubjectRepository subjectRepository, StudentRepository studentRepository) {
+    public SubjectService(SubjectRepository subjectRepository, StudentRepository studentRepository, TeacherRepository teacherRepository) {
         this.subjectRepository = subjectRepository;
         this.studentRepository = studentRepository;
+        this.teacherRepository = teacherRepository;
     }
 
     public List<Subject> getSubjects() {
@@ -75,6 +79,23 @@ public class SubjectService {
                 ));
 
         subject.enrollStudent(student);
+
+        //Husk at save dine ændringer
+        return subjectRepository.save(subject);
+    }
+
+    public Subject enrollTeacherToSubject(long subjectId, long teacherId) {
+        Subject subject = subjectRepository.findById(subjectId)
+                .orElseThrow(() -> new IllegalStateException(
+                        "Subject with id " + subjectId + " does not exist"
+                ));
+
+        Teacher teacher = teacherRepository.findById(teacherId)
+                .orElseThrow(() -> new IllegalStateException(
+                        "Student with id " + teacherId + " does not exist"
+                ));
+
+        subject.assignTeacher(teacher);
 
         //Husk at save dine ændringer
         return subjectRepository.save(subject);

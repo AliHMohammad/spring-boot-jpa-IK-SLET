@@ -2,6 +2,7 @@ package dk.kea.springbootdb.subject;
 
 
 import dk.kea.springbootdb.student.Student;
+import dk.kea.springbootdb.teacher.Teacher;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -23,6 +24,11 @@ public class Subject {
             inverseJoinColumns = @JoinColumn(name = "student_id")
     )
     private Set<Student> enrolledStudents = new HashSet<>();
+
+    //Mange subjects har en teacher. En teacher har mange subjects. ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "teacher_id", referencedColumnName = "id")
+    private Teacher teacher;
 
 
 
@@ -74,12 +80,20 @@ public class Subject {
         this.enrolledStudents.add(student);
     }
 
+    public void assignTeacher(Teacher teacher) {
+        this.teacher = teacher;
+    }
+
     public void setEnrolledStudents(Set<Student> enrolledStudents) {
         this.enrolledStudents = enrolledStudents;
     }
 
     public Set<Student> getEnrolledStudents() {
         return enrolledStudents;
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
     }
 
     @Override
