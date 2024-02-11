@@ -1,7 +1,11 @@
 package dk.kea.springbootdb.subject;
 
 
+import dk.kea.springbootdb.student.Student;
 import jakarta.persistence.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Subject {
@@ -10,8 +14,17 @@ public class Subject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
-
     private int ects;
+
+    @ManyToMany
+    @JoinTable(
+            name = "students_subjects",
+            joinColumns = @JoinColumn(name = "subject_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id")
+    )
+    private Set<Student> enrolledStudents = new HashSet<>();
+
+
 
     public Subject() {
 
@@ -55,6 +68,18 @@ public class Subject {
 
     public void setEcts(int ects) {
         this.ects = ects;
+    }
+
+    public void enrollStudent(Student student) {
+        this.enrolledStudents.add(student);
+    }
+
+    public void setEnrolledStudents(Set<Student> enrolledStudents) {
+        this.enrolledStudents = enrolledStudents;
+    }
+
+    public Set<Student> getEnrolledStudents() {
+        return enrolledStudents;
     }
 
     @Override

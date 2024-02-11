@@ -1,10 +1,14 @@
 package dk.kea.springbootdb.student;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import dk.kea.springbootdb.subject.Subject;
 import jakarta.persistence.*;
 import org.springframework.lang.NonNull;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table
@@ -18,8 +22,13 @@ public class Student {
     private String email;
     private LocalDate dateOfBirth;
 
+    //Vi bruger @JsonIgnore for at undgå rekursion, når vi tilføjer en student til et subject
+    @JsonIgnore
+    @ManyToMany(mappedBy = "enrolledStudents")
+    private Set<Subject> subjects = new HashSet<>();
+
     //Transient betyder, at den ikke bliver gemt i databasen. Der bliver ikke oprettet en kolonne
-    //Fordelen er, at den returnerer age ved get-kald ud fra getAge() metoden.
+    //Fordelen er, at den returnerer age ved get-kald ud fra getAge() metoden, som anvender dob.
     @Transient
     private int age;
 
@@ -91,6 +100,10 @@ public class Student {
     private void setDateOfBirth(String dobString) {
         String[] dateArr = dobString.split("-");
         this.dateOfBirth = LocalDate.of(Integer.parseInt(dateArr[2]), Integer.parseInt(dateArr[1]), Integer.parseInt(dateArr[0]));
+    }
+
+    public Set<Subject> getSubjects() {
+        return subjects;
     }
 
     @Override

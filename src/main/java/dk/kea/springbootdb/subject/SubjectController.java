@@ -72,4 +72,17 @@ public class SubjectController {
         }
     }
 
+    @PutMapping("/{subjectId}/students/{studentId}")
+    public ResponseEntity<Subject> enrollStudentToSubject(
+            @PathVariable("subjectId") long subjectId,
+            @PathVariable("studentId") long studentId
+    ) {
+        try {
+            return new ResponseEntity<>(subjectService.enrollStudentToSubject(subjectId, studentId), HttpStatus.OK);
+        } catch (Exception e) {
+            HttpStatus httpStatus = e instanceof IllegalStateException ? HttpStatus.NOT_FOUND : HttpStatus.INTERNAL_SERVER_ERROR;
+            throw new ResponseStatusException(httpStatus, e.getMessage());
+        }
+    }
+
 }
