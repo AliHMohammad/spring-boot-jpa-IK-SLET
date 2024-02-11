@@ -46,9 +46,13 @@ public class Teacher {
         return Period.between(this.dateOfBirth, LocalDate.now()).getYears();
     }
 
-    private void setDateOfBirth(String dobString) {
+    public void setDateOfBirth(String dobString) {
         String[] dateArr = dobString.split("-");
         this.dateOfBirth = LocalDate.of(Integer.parseInt(dateArr[2]), Integer.parseInt(dateArr[1]), Integer.parseInt(dateArr[0]));
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public Long getId() {

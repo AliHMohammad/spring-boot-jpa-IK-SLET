@@ -59,7 +59,7 @@ public class TeacherController {
         }
     }
 
-    @PostMapping("/{teacherId}")
+    @PutMapping("/{teacherId}")
     public ResponseEntity<Teacher> updateTeacher(@PathVariable("teacherId") long id, @RequestBody Teacher teacher) {
         try {
             return new ResponseEntity<>(teacherService.updateTeacher(id, teacher), HttpStatus.OK);

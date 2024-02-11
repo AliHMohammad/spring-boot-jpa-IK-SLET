@@ -52,6 +52,7 @@ public class TeacherService {
 
 
         teacherInDb.setName(updatedTeacher.getName());
+        teacherInDb.setDateOfBirth(updatedTeacher.getDateOfBirth());
         return teacherInDb;
     }
 

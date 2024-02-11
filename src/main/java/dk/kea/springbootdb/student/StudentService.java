@@ -61,6 +61,7 @@ public class StudentService {
         //HUSK @Transactional på metoden for at det virker
         studentInDb.setEmail(updatedStudent.getEmail());
         studentInDb.setName(updatedStudent.getName());
+        studentInDb.setDateOfBirth(updatedStudent.getDateOfBirth());
 
         return studentInDb;
     }
