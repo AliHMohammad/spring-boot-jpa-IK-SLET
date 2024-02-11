@@ -1,17 +1,13 @@
 package dk.kea.springbootdb.student;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @RestController
 @RequestMapping(path = "/api/v1/students")
@@ -24,9 +20,14 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Student>> getStudents() {
+    public ResponseEntity<Page<Student>> getStudents(
+            @RequestParam Optional<String> sortBy,
+            @RequestParam Optional<String> sortDir,
+            @RequestParam Optional<Integer> pageNum,
+            @RequestParam Optional<Integer> pageSize
+            ) {
         try {
-            return new ResponseEntity<>(studentService.getStudents(), HttpStatus.OK);
+            return new ResponseEntity<>(studentService.getStudents(sortBy, sortDir, pageNum, pageSize), HttpStatus.OK);
         } catch (Exception e) {
             HttpStatus httpStatus = e instanceof IllegalStateException ? HttpStatus.BAD_REQUEST : HttpStatus.INTERNAL_SERVER_ERROR;
             throw new ResponseStatusException(httpStatus, e.getMessage());

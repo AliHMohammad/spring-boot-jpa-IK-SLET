@@ -2,6 +2,9 @@ package dk.kea.springbootdb.student;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,8 +24,26 @@ public class StudentService {
     }
 
 
-    public List<Student> getStudents() {
-        return studentRepository.findAll();
+    public Page<Student> getStudents(
+            Optional<String> sortBy,
+            Optional<String> sortDir,
+            Optional<Integer> pageNum,
+            Optional<Integer> pageSize
+    ) {
+        //Querien sortDir skal enten være 'desc' or 'asc' i postman
+        Sort.Direction direction = sortDir.map(String::toUpperCase)
+                .filter("DESC"::equals)
+                .map(x -> Sort.Direction.DESC)
+                .orElse(Sort.Direction.ASC);
+
+        return studentRepository.findAll(
+                PageRequest.of(
+                        pageNum.orElse(0),
+                        pageSize.orElse(10),
+                        direction,
+                        sortBy.orElse("id")
+                )
+        );
     }
 
     public Student addNewStudent(Student student) {
