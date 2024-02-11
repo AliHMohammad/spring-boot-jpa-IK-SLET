@@ -38,6 +38,8 @@ public class StudentService {
                 .map(x -> Sort.Direction.DESC)
                 .orElse(Sort.Direction.ASC);
 
+
+        //Vi laver et Pageable object ud fra pagenum, pagesize, sortby og sortdir (Direction)
         Pageable pageable = PageRequest.of(
                 pageNum.orElse(0),
                 pageSize.orElse(10),
@@ -45,9 +47,8 @@ public class StudentService {
                 sortBy.orElse("id")
         );
 
-        if (filterBy.isPresent()){
-            return studentRepository.findStudentByNameContainingIgnoreCase(filterBy.orElse(""), pageable);
-        }
+        //Vi har lavet vores egen query, der modtager en string og Pageable. Se repository
+        if (filterBy.isPresent()) return studentRepository.findStudentByNameContainingIgnoreCase(filterBy.get(), pageable);
 
         return studentRepository.findAll(pageable);
     }

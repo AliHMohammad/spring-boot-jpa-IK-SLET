@@ -25,6 +25,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     //Bliver brugt hvis filter query er angivet.
     //Vi filtrerer ud fra name
+    //Vi angiver et Pageable ifm pagination
     Page<Student> findStudentByNameContainingIgnoreCase(String filter, Pageable pageable);
 }
 
