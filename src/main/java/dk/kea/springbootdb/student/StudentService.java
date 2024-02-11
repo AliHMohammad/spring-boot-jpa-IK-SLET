@@ -4,6 +4,7 @@ package dk.kea.springbootdb.student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,8 @@ public class StudentService {
             Optional<String> sortBy,
             Optional<String> sortDir,
             Optional<Integer> pageNum,
-            Optional<Integer> pageSize
+            Optional<Integer> pageSize,
+            Optional<String> filterBy
     ) {
         //Querien sortDir skal enten være 'desc' or 'asc' i postman
         Sort.Direction direction = sortDir.map(String::toUpperCase)
@@ -36,14 +38,18 @@ public class StudentService {
                 .map(x -> Sort.Direction.DESC)
                 .orElse(Sort.Direction.ASC);
 
-        return studentRepository.findAll(
-                PageRequest.of(
-                        pageNum.orElse(0),
-                        pageSize.orElse(10),
-                        direction,
-                        sortBy.orElse("id")
-                )
+        Pageable pageable = PageRequest.of(
+                pageNum.orElse(0),
+                pageSize.orElse(10),
+                direction,
+                sortBy.orElse("id")
         );
+
+        if (filterBy.isPresent()){
+            return studentRepository.findStudentByNameContainingIgnoreCase(filterBy.orElse(""), pageable);
+        }
+
+        return studentRepository.findAll(pageable);
     }
 
     public Student addNewStudent(Student student) {

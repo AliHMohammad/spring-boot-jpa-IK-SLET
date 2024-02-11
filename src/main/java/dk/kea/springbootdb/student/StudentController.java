@@ -24,10 +24,11 @@ public class StudentController {
             @RequestParam Optional<String> sortBy,
             @RequestParam Optional<String> sortDir,
             @RequestParam Optional<Integer> pageNum,
-            @RequestParam Optional<Integer> pageSize
+            @RequestParam Optional<Integer> pageSize,
+            @RequestParam Optional<String> filterBy
             ) {
         try {
-            return new ResponseEntity<>(studentService.getStudents(sortBy, sortDir, pageNum, pageSize), HttpStatus.OK);
+            return new ResponseEntity<>(studentService.getStudents(sortBy, sortDir, pageNum, pageSize, filterBy), HttpStatus.OK);
         } catch (Exception e) {
             HttpStatus httpStatus = e instanceof IllegalStateException ? HttpStatus.BAD_REQUEST : HttpStatus.INTERNAL_SERVER_ERROR;
             throw new ResponseStatusException(httpStatus, e.getMessage());

@@ -1,8 +1,11 @@
 package dk.kea.springbootdb.student;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
 
 import java.util.Optional;
 
@@ -18,6 +21,11 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     //Querien skal se ud til metoden med @Query()
     @Query("select s from Student s where s.name = ?1")
     Optional<Student> findStudentByName(String name);
+
+
+    //Bliver brugt hvis filter query er angivet.
+    //Vi filtrerer ud fra name
+    Page<Student> findStudentByNameContainingIgnoreCase(String filter, Pageable pageable);
 }
 
 
