@@ -12,7 +12,6 @@ public class SubjectService {
 
     private final SubjectRepository subjectRepository;
 
-    @Autowired
     public SubjectService(SubjectRepository subjectRepository) {
         this.subjectRepository = subjectRepository;
     }
