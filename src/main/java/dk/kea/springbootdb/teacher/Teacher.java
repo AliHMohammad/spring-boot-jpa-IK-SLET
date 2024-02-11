@@ -37,6 +37,11 @@ public class Teacher {
         setDateOfBirth(dateOfBirthString);
     }
 
+    public Teacher(Teacher other) {
+        this.name = other.name;
+        this.dateOfBirth = other.dateOfBirth;
+    }
+
     public int getAge() {
         return Period.between(this.dateOfBirth, LocalDate.now()).getYears();
     }
@@ -60,6 +65,10 @@ public class Teacher {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
     }
 
     @Override
