@@ -64,8 +64,7 @@ public class SubjectController {
 
         if (subjectDeleted.isEmpty()) return ResponseEntity.notFound().build();
 
-        return ResponseEntity.ok(subjectDeleted.get());
-
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{subjectId}")
@@ -73,7 +72,7 @@ public class SubjectController {
 
         Optional<Subject> subject = subjectService.updateSubject(id, updatedSubject);
 
-        if (subject.isEmpty()) return  ResponseEntity.notFound().build();
+        if (subject.isEmpty()) return ResponseEntity.notFound().build();
 
         return ResponseEntity.ok(subject.get());
     }
