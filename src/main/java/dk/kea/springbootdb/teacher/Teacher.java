@@ -28,38 +28,8 @@ public class Teacher {
     @Transient
     private int age;
 
-    public Teacher() {
-
-    }
-
-    public Teacher(Long id, String name, LocalDate dateOfBirth) {
-        this.id = id;
-        this.name = name;
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public Teacher(String name, LocalDate dateOfBirth) {
-        this.name = name;
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public Teacher(String name, String dateOfBirthString) {
-        this.name = name;
-        setDateOfBirth(dateOfBirthString);
-    }
-
-    public Teacher(Teacher other) {
-        this.name = other.name;
-        this.dateOfBirth = other.dateOfBirth;
-    }
-
     public int getAge() {
         return Period.between(this.dateOfBirth, LocalDate.now()).getYears();
-    }
-
-    public void setDateOfBirth(String dobString) {
-        String[] dateArr = dobString.split("-");
-        this.dateOfBirth = LocalDate.of(Integer.parseInt(dateArr[2]), Integer.parseInt(dateArr[1]), Integer.parseInt(dateArr[0]));
     }
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
@@ -90,13 +60,4 @@ public class Teacher {
         return subjects;
     }
 
-    @Override
-    public String toString() {
-        return "Teacher{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", dateOfBirth=" + dateOfBirth +
-                ", age=" + age +
-                '}';
-    }
 }

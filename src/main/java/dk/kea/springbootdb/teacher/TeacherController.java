@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/api/v1/teachers")
@@ -20,21 +21,18 @@ public class TeacherController {
 
     @GetMapping
     public ResponseEntity<List<Teacher>> getTeachers() {
-        try {
-            return new ResponseEntity<>(teacherService.getTeachers(), HttpStatus.OK);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
+        return new ResponseEntity<>(teacherService.getTeachers(), HttpStatus.OK);
     }
 
     @GetMapping("/{teacherId}")
     public ResponseEntity<Teacher> getSingleTeacher(@PathVariable("teacherId") long id) {
-        try {
-            return new ResponseEntity<>(teacherService.getSingleTeacher(id), HttpStatus.OK);
-        } catch (Exception e) {
-            HttpStatus httpStatus = e instanceof IllegalStateException ? HttpStatus.NOT_FOUND : HttpStatus.INTERNAL_SERVER_ERROR;
-            throw new ResponseStatusException(httpStatus, e.getMessage());
+        Optional<Teacher> teacher = teacherService.getSingleTeacher(id);
+
+        if (teacher.isEmpty()){
+            return ResponseEntity.notFound().build();
         }
+
+        return ResponseEntity.ok(teacher.get());
     }
 
     @PostMapping
@@ -48,23 +46,20 @@ public class TeacherController {
     }
 
     @DeleteMapping("/{teacherId}")
-    public ResponseEntity<Void> deleteTeacher(@PathVariable("teacherId") long id) {
-        try {
-            teacherService.deleteTeacher(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            HttpStatus httpStatus = e instanceof IllegalStateException ? HttpStatus.NOT_FOUND : HttpStatus.INTERNAL_SERVER_ERROR;
-            throw new ResponseStatusException(httpStatus, e.getMessage());
-        }
+    public ResponseEntity<Teacher> deleteTeacher(@PathVariable("teacherId") long id) {
+        Optional<Teacher> teacherDeleted = teacherService.deleteTeacher(id);
+
+        if (teacherDeleted.isEmpty()) return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok(teacherDeleted.get());
     }
 
     @PutMapping("/{teacherId}")
     public ResponseEntity<Teacher> updateTeacher(@PathVariable("teacherId") long id, @RequestBody Teacher teacher) {
-        try {
-            return new ResponseEntity<>(teacherService.updateTeacher(id, teacher), HttpStatus.OK);
-        } catch (Exception e) {
-            HttpStatus httpStatus = e instanceof IllegalStateException ? HttpStatus.NOT_FOUND : HttpStatus.INTERNAL_SERVER_ERROR;
-            throw new ResponseStatusException(httpStatus, e.getMessage());
-        }
+        Optional<Teacher> resultTeacher = teacherService.updateTeacher(id, teacher);
+
+        if (resultTeacher.isEmpty()) return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok(resultTeacher.get());
     }
 }

@@ -1,5 +1,6 @@
 package dk.kea.springbootdb.teacher;
 
+import dk.kea.springbootdb.student.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,38 +22,45 @@ public class TeacherService {
         return teacherRepository.findAll();
     }
 
-    public Teacher getSingleTeacher(long id) {
-        return teacherRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Teacher by id " + id + " does not exist"));
+    public Optional<Teacher> getSingleTeacher(long id) {
+        return teacherRepository.findById(id);
     }
 
     public Teacher createTeacher(Teacher newTeacher) {
-        Teacher teacherInstance = new Teacher(newTeacher);
 
-        boolean exists = teacherRepository.existsByName(teacherInstance.getName());
+        boolean exists = teacherRepository.existsByName(newTeacher.getName());
 
         if (exists) throw new IllegalStateException("Teacher already exists");
 
-        return teacherRepository.save(teacherInstance);
+        return teacherRepository.save(newTeacher);
     }
 
-    public void deleteTeacher(long id) {
-        boolean exists = teacherRepository.existsById(id);
+    public Optional<Teacher> deleteTeacher(long id) {
+        //Vi returnerer det slettede person til frontend, for at at vise, hvad der er blevet slettet
+        Optional<Teacher> teacherInDb = teacherRepository.findById(id);
 
-        if (!exists) throw new IllegalStateException("Teacher with id " + id + " does not exist");
+        if (teacherInDb.isPresent()) {
+            teacherRepository.deleteById(id);
+        }
 
-        teacherRepository.deleteById(id);
+        return teacherInDb;
     }
 
     @Transactional
-    public Teacher updateTeacher(long id, Teacher teacher) {
-        Teacher updatedTeacher = new Teacher(teacher);
-        Teacher teacherInDb = teacherRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Teacher by id " + id + " does not exist"));;
+    public Optional<Teacher> updateTeacher(long id, Teacher teacher) {
 
+        Optional<Teacher> teacherInDb = teacherRepository.findById(id);
 
-        teacherInDb.setName(updatedTeacher.getName());
-        teacherInDb.setDateOfBirth(updatedTeacher.getDateOfBirth());
+        if (teacherInDb.isEmpty()) {
+            return teacherInDb;
+        }
+
+        //Vi bruger dens setter til at opdatere
+        //Ændringen gemmer i db'en
+        //HUSK @Transactional på metoden for at det virker uden at vi skal gemme igen
+
+        teacherInDb.get().setName(teacher.getName());
+        teacherInDb.get().setDateOfBirth(teacher.getDateOfBirth());
         return teacherInDb;
     }
 
