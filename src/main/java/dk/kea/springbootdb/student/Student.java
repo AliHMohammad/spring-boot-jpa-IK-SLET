@@ -14,7 +14,6 @@ import java.util.Set;
 @Table
 public class Student {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,35 +31,6 @@ public class Student {
     //Fordelen er, at den returnerer age ved get-kald ud fra getAge() metoden, som anvender dob.
     @Transient
     private int age;
-
-    public Student(long id, String name, String email, LocalDate dateOfBirth) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public Student() {
-
-    }
-
-    public Student(Student other) {
-        this.name = other.name;
-        this.email = other.email;
-        this.dateOfBirth = other.dateOfBirth;
-    }
-
-    public Student(String name, String email, LocalDate dateOfBirth) {
-        this.name = name;
-        this.email = email;
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public Student(String name, String email, String dateOfBirthString) {
-        this.name = name;
-        this.email = email;
-        setDateOfBirth(dateOfBirthString);
-    }
 
     public long getId() {
         return id;
@@ -98,22 +68,8 @@ public class Student {
         return Period.between(this.dateOfBirth, LocalDate.now()).getYears();
     }
 
-    private void setDateOfBirth(String dobString) {
-        String[] dateArr = dobString.split("-");
-        this.dateOfBirth = LocalDate.of(Integer.parseInt(dateArr[2]), Integer.parseInt(dateArr[1]), Integer.parseInt(dateArr[0]));
-    }
-
     public Set<Subject> getSubjects() {
         return subjects;
     }
 
-    @Override
-    public String toString() {
-        return "Student { " +
-                "id= " + id +
-                ", name= '" + name + '\'' +
-                ", email= '" + email + '\'' +
-                ", dateOfBirth= " + dateOfBirth +
-                '}';
-    }
 }

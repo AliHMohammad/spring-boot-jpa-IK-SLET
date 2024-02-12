@@ -62,41 +62,39 @@ public class StudentService {
             throw new IllegalStateException("email taken");
         }
 
-        Student studentToCreate = new Student(student);
-        return studentRepository.save(studentToCreate);
+        return studentRepository.save(student);
     }
 
-    public void deleteStudent(long studentId) {
-        boolean exists = studentRepository.existsById(studentId);
+    public Optional<Student> deleteStudent(long studentId) {
+        //Vi returnerer det slettede person til frontend, for at at vise, hvad der er blevet slettet
+        Optional<Student> studentInDb = studentRepository.findById(studentId);
 
-        if (!exists) {
-            throw new IllegalStateException("student with id: " + studentId + " does not exist in the db");
+        if (studentInDb.isPresent()) {
+            studentRepository.delete(studentInDb.get());
         }
-
-        studentRepository.deleteById(studentId);
-    }
-
-    @Transactional
-    public Student updateStudent(long id, Student updatedStudent) {
-        Student studentInDb = studentRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException(
-                        "Student with id " + id + " does not exist"
-                ));
-
-        //Vi bruger dens setter til at opdatere
-        //Ændringen gemmer i db'en
-        //HUSK @Transactional på metoden for at det virker
-        studentInDb.setEmail(updatedStudent.getEmail());
-        studentInDb.setName(updatedStudent.getName());
-        studentInDb.setDateOfBirth(updatedStudent.getDateOfBirth());
 
         return studentInDb;
     }
 
-    public Student getSingleStudent(long id) {
-        return studentRepository.findById(id)
-                .orElseThrow(()-> new IllegalStateException(
-                        "Student with id " + id + " does not exist"
-                ));
+    @Transactional
+    public Optional<Student> updateStudent(long id, Student updatedStudent) {
+        Optional<Student> studentInDb = studentRepository.findById(id);
+
+        if (studentInDb.isEmpty()) {
+            return studentInDb;
+        }
+
+        //Vi bruger dens setter til at opdatere
+        //Ændringen gemmer i db'en
+        //HUSK @Transactional på metoden for at det virker
+        studentInDb.get().setEmail(updatedStudent.getEmail());
+        studentInDb.get().setName(updatedStudent.getName());
+        studentInDb.get().setDateOfBirth(updatedStudent.getDateOfBirth());
+
+        return studentInDb;
+    }
+
+    public Optional<Student> getSingleStudent(long id) {
+        return studentRepository.findById(id);
     }
 }
