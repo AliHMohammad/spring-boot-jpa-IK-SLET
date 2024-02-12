@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/api/v1/subjects")
@@ -22,22 +23,16 @@ public class SubjectController {
 
     @GetMapping
     public ResponseEntity<List<Subject>> getSubjects() {
-        try {
-            return new ResponseEntity<>(subjectService.getSubjects(), HttpStatus.OK);
-        } catch (Exception e) {
-            HttpStatus httpStatus = e instanceof IllegalStateException ? HttpStatus.NOT_FOUND : HttpStatus.INTERNAL_SERVER_ERROR;
-            throw new ResponseStatusException(httpStatus, e.getMessage());
-        }
+        return new ResponseEntity<>(subjectService.getSubjects(), HttpStatus.OK);
     }
 
     @GetMapping("/{subjectId}")
     public ResponseEntity<Subject> getSingleSubject(@PathVariable("subjectId") long id) {
-        try {
-            return new ResponseEntity<>(subjectService.getSingleSubject(id), HttpStatus.OK);
-        } catch (Exception e) {
-            HttpStatus httpStatus = e instanceof IllegalStateException ? HttpStatus.NOT_FOUND : HttpStatus.INTERNAL_SERVER_ERROR;
-            throw new ResponseStatusException(httpStatus, e.getMessage());
-        }
+        Optional<Subject> subjectInDb = subjectService.getSingleSubject(id);
+
+        if (subjectInDb.isEmpty()) return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok(subjectInDb.get());
     }
 
     @PostMapping
@@ -52,24 +47,24 @@ public class SubjectController {
     }
 
     @DeleteMapping("/{subjectId}")
-    public ResponseEntity<Void> deleteSubject(@PathVariable("subjectId") long id) {
-        try {
-            subjectService.deleteSubject(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            HttpStatus httpStatus = e instanceof IllegalStateException ? HttpStatus.NOT_FOUND : HttpStatus.INTERNAL_SERVER_ERROR;
-            throw new ResponseStatusException(httpStatus, e.getMessage());
-        }
+    public ResponseEntity<Subject> deleteSubject(@PathVariable("subjectId") long id) {
+
+        Optional<Subject> subjectDeleted = subjectService.deleteSubject(id);
+
+        if (subjectDeleted.isEmpty()) return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok(subjectDeleted.get());
+
     }
 
     @PutMapping("/{subjectId}")
     public ResponseEntity<Subject> updateSubject(@PathVariable("subjectId") long id, @RequestBody Subject updatedSubject) {
-        try {
-            return new ResponseEntity<>(subjectService.updateSubject(id, updatedSubject), HttpStatus.OK);
-        } catch (Exception e) {
-            HttpStatus httpStatus = e instanceof IllegalStateException ? HttpStatus.NOT_FOUND : HttpStatus.INTERNAL_SERVER_ERROR;
-            throw new ResponseStatusException(httpStatus, e.getMessage());
-        }
+
+        Optional<Subject> subject = subjectService.updateSubject(id, updatedSubject);
+
+        if (subject.isEmpty()) return  ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok(subject.get());
     }
 
     @PutMapping("/{subjectId}/students/{studentId}")
@@ -78,7 +73,7 @@ public class SubjectController {
             @PathVariable("studentId") long studentId
     ) {
         try {
-            return new ResponseEntity<>(subjectService.enrollStudentToSubject(subjectId, studentId), HttpStatus.OK);
+            return ResponseEntity.ok(subjectService.enrollStudentToSubject(subjectId, studentId));
         } catch (Exception e) {
             HttpStatus httpStatus = e instanceof IllegalStateException ? HttpStatus.NOT_FOUND : HttpStatus.INTERNAL_SERVER_ERROR;
             throw new ResponseStatusException(httpStatus, e.getMessage());
@@ -91,7 +86,7 @@ public class SubjectController {
             @PathVariable("teacherId") long teacherId
     ) {
         try {
-            return new ResponseEntity<>(subjectService.enrollTeacherToSubject(subjectId, teacherId), HttpStatus.OK);
+            return ResponseEntity.ok(subjectService.enrollTeacherToSubject(subjectId, teacherId));
         } catch (Exception e) {
             HttpStatus httpStatus = e instanceof IllegalStateException ? HttpStatus.NOT_FOUND : HttpStatus.INTERNAL_SERVER_ERROR;
             throw new ResponseStatusException(httpStatus, e.getMessage());

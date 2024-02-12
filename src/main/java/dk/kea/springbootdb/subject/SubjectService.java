@@ -28,41 +28,44 @@ public class SubjectService {
         return subjectRepository.findAll();
     }
 
-    public Subject getSingleSubject(long id) {
-        return subjectRepository.findById(id)
-                .orElseThrow(()-> new IllegalStateException(
-                        "Subject with id " + id + " could not be found"
-                ));
+    public Optional<Subject> getSingleSubject(long id) {
+        return subjectRepository.findById(id);
     }
 
     public Subject createSubject(Subject subject) {
-        Subject subjectToCreate = new Subject(subject);
-        Optional<Subject> subjectInDb = subjectRepository.findSubjectByTitle(subjectToCreate.getTitle());
+
+        Optional<Subject> subjectInDb = subjectRepository.findSubjectByTitle(subject.getTitle());
 
         if (subjectInDb.isPresent()) {
-            throw new IllegalStateException("Subject with title " + subjectToCreate.getTitle() + " alrteady exists in db");
+            throw new IllegalStateException("Subject with title " + subject.getTitle() + " alrteady exists in db");
         }
 
-        return subjectRepository.save(subjectToCreate);
+        return subjectRepository.save(subject);
     }
 
-    public void deleteSubject(long id) {
-        boolean exists = subjectRepository.existsById(id);
+    public Optional<Subject> deleteSubject(long id) {
+        Optional<Subject> subjectInDb = subjectRepository.findById(id);
 
-        if (!exists) throw new IllegalStateException("Subject with id " + id + " does not exist");
+        if (subjectInDb.isPresent()) {
+            subjectRepository.delete(subjectInDb.get());
+        }
 
-        subjectRepository.deleteById(id);
+        return subjectInDb;
     }
 
     @Transactional
-    public Subject updateSubject(long id, Subject updatedSubject) {
-        Subject subjectInDb = subjectRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException(
-                        "Subject with id " + id + " does not exist"
-                ));
+    public Optional<Subject> updateSubject(long id, Subject updatedSubject) {
+        Optional<Subject> subjectInDb = subjectRepository.findById(id);
 
-        subjectInDb.setTitle(updatedSubject.getTitle());
-        subjectInDb.setEcts(updatedSubject.getEcts());
+        if (subjectInDb.isEmpty()) {
+            return subjectInDb;
+        }
+
+        //Vi bruger dens setter til at opdatere
+        //Ændringen gemmer i db'en
+        //HUSK @Transactional på metoden for at det virker
+        subjectInDb.get().setTitle(updatedSubject.getTitle());
+        subjectInDb.get().setEcts(updatedSubject.getEcts());
 
         return subjectInDb;
     }

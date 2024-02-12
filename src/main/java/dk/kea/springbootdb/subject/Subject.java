@@ -30,28 +30,6 @@ public class Subject {
     @JoinColumn(name = "teacher_id", referencedColumnName = "id")
     private Teacher teacher;
 
-
-
-    public Subject() {
-
-    }
-
-    public Subject(Subject other) {
-        this.title = other.title;
-        this.ects = other.ects;
-    }
-
-    public Subject(String title, int ects) {
-        this.title = title;
-        this.ects = ects;
-    }
-
-    public Subject(Long id, String title, int ects) {
-        this.id = id;
-        this.title = title;
-        this.ects = ects;
-    }
-
     public Long getId() {
         return id;
     }
@@ -91,17 +69,8 @@ public class Subject {
     public Set<Student> getEnrolledStudents() {
         return enrolledStudents;
     }
-
     public Teacher getTeacher() {
         return teacher;
     }
 
-    @Override
-    public String toString() {
-        return "Subject{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", ects=" + ects +
-                '}';
-    }
 }
