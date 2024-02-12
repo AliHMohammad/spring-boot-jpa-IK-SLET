@@ -6,7 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +40,16 @@ public class SubjectController {
     @PostMapping
     public ResponseEntity<Subject> createSubject(@RequestBody Subject subject) {
         try {
-            return new ResponseEntity<>(subjectService.createSubject(subject), HttpStatus.CREATED);
+            Subject createdSubject = subjectService.createSubject(subject);
+
+            //Vi bygger en location til response header
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(createdSubject.getId())
+                    .toUri();
+
+            return ResponseEntity.created(location).build();
         } catch (Exception e) {
             HttpStatus httpStatus = e instanceof IllegalStateException ? HttpStatus.BAD_REQUEST : HttpStatus.INTERNAL_SERVER_ERROR;
             throw new ResponseStatusException(httpStatus, e.getMessage());

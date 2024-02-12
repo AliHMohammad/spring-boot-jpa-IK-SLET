@@ -1,12 +1,15 @@
 package dk.kea.springbootdb.student;
 
 
+import dk.kea.springbootdb.subject.Subject;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.*;
 
 @RestController
@@ -44,7 +47,16 @@ public class StudentController {
     @PostMapping
     public ResponseEntity<Student> registerNewStudent(@RequestBody Student student) {
         try {
-            return new ResponseEntity<>(studentService.addNewStudent(student), HttpStatus.CREATED);
+            Student createdStudent = studentService.addNewStudent(student);
+
+            //Vi bygger en location til response header
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(createdStudent.getId())
+                    .toUri();
+
+            return ResponseEntity.created(location).build();
         } catch (Exception e) {
             HttpStatus httpStatus = e instanceof IllegalStateException ? HttpStatus.BAD_REQUEST : HttpStatus.INTERNAL_SERVER_ERROR;
             throw new ResponseStatusException(httpStatus, e.getMessage());
