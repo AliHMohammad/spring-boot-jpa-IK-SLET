@@ -95,6 +95,9 @@ public class StudentService {
     }
 
     public Optional<Student> getSingleStudent(long id) {
-        return studentRepository.findById(id);
+        return studentRepository.findById(id)
+            .orElseThrow(()-> new IllegalStateException(
+                        "Student with id " + id + " does not exist"
+                ));
     }
 }
