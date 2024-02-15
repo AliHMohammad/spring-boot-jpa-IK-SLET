@@ -32,9 +32,7 @@ public class SubjectController {
     public ResponseEntity<Subject> getSingleSubject(@PathVariable("subjectId") long id) {
         Optional<Subject> subjectInDb = subjectService.getSingleSubject(id);
 
-        if (subjectInDb.isEmpty()) return ResponseEntity.notFound().build();
-
-        return ResponseEntity.ok(subjectInDb.get());
+        return ResponseEntity.of(subjectInDb);
     }
 
     @PostMapping
@@ -49,7 +47,7 @@ public class SubjectController {
                     .buildAndExpand(createdSubject.getId())
                     .toUri();
 
-            return ResponseEntity.created(location).build();
+            return ResponseEntity.created(location).body(createdSubject);
         } catch (Exception e) {
             HttpStatus httpStatus = e instanceof IllegalStateException ? HttpStatus.BAD_REQUEST : HttpStatus.INTERNAL_SERVER_ERROR;
             throw new ResponseStatusException(httpStatus, e.getMessage());
@@ -59,7 +57,6 @@ public class SubjectController {
 
     @DeleteMapping("/{subjectId}")
     public ResponseEntity<Subject> deleteSubject(@PathVariable("subjectId") long id) {
-
         Optional<Subject> subjectDeleted = subjectService.deleteSubject(id);
 
         if (subjectDeleted.isEmpty()) return ResponseEntity.notFound().build();

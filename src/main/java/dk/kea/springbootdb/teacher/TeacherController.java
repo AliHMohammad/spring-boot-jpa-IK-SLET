@@ -31,11 +31,7 @@ public class TeacherController {
     public ResponseEntity<Teacher> getSingleTeacher(@PathVariable("teacherId") long id) {
         Optional<Teacher> teacher = teacherService.getSingleTeacher(id);
 
-        if (teacher.isEmpty()){
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(teacher.get());
+        return ResponseEntity.of(teacher);
     }
 
     @PostMapping
@@ -50,7 +46,7 @@ public class TeacherController {
                     .buildAndExpand(createdTeacher.getId())
                     .toUri();
 
-            return ResponseEntity.created(location).build();
+            return ResponseEntity.created(location).body(createdTeacher);
         } catch (Exception e) {
             HttpStatus httpStatus = e instanceof IllegalStateException ? HttpStatus.BAD_REQUEST : HttpStatus.INTERNAL_SERVER_ERROR;
             throw new ResponseStatusException(httpStatus, e.getMessage());
@@ -70,8 +66,6 @@ public class TeacherController {
     public ResponseEntity<Teacher> updateTeacher(@PathVariable("teacherId") long id, @RequestBody Teacher teacher) {
         Optional<Teacher> resultTeacher = teacherService.updateTeacher(id, teacher);
 
-        if (resultTeacher.isEmpty()) return ResponseEntity.notFound().build();
-
-        return ResponseEntity.ok(resultTeacher.get());
+        return ResponseEntity.of(resultTeacher);
     }
 }

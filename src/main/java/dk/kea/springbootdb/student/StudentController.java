@@ -37,11 +37,7 @@ public class StudentController {
     public ResponseEntity<Student> getSingleStudent(@PathVariable("studentId") long id) {
         Optional<Student> studentFound = studentService.getSingleStudent(id);
 
-        if (studentFound.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(studentFound.get());
+        return ResponseEntity.of(studentFound);
     }
 
     @PostMapping
@@ -56,7 +52,7 @@ public class StudentController {
                     .buildAndExpand(createdStudent.getId())
                     .toUri();
 
-            return ResponseEntity.created(location).build();
+            return ResponseEntity.created(location).body(createdStudent);
         } catch (Exception e) {
             HttpStatus httpStatus = e instanceof IllegalStateException ? HttpStatus.BAD_REQUEST : HttpStatus.INTERNAL_SERVER_ERROR;
             throw new ResponseStatusException(httpStatus, e.getMessage());
@@ -76,9 +72,7 @@ public class StudentController {
     public ResponseEntity<Student> updateStudent(@PathVariable("studentId") long id, @RequestBody Student updatedStudent) {
         Optional<Student> student = studentService.updateStudent(id, updatedStudent);
 
-        if (student.isEmpty()) return ResponseEntity.notFound().build();
-
-        return ResponseEntity.ok(student.get());
+        return ResponseEntity.of(student);
     }
 
 
