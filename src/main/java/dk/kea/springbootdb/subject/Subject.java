@@ -26,7 +26,7 @@ public class Subject {
     private Set<Student> enrolledStudents = new HashSet<>();
 
     //Mange subjects har en teacher. En teacher har mange subjects. ManyToOne
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "teacher_id", referencedColumnName = "id")
     private Teacher teacher;
 

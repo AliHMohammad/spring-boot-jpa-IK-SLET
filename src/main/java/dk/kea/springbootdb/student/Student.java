@@ -27,11 +27,6 @@ public class Student {
     @ManyToMany(mappedBy = "enrolledStudents")
     private Set<Subject> subjects = new HashSet<>();
 
-    //Transient betyder, at den ikke bliver gemt i databasen. Der bliver ikke oprettet en kolonne
-    //Fordelen er, at den returnerer age ved get-kald ud fra getAge() metoden, som anvender dob.
-    @Transient
-    private int age;
-
     public long getId() {
         return id;
     }
@@ -62,10 +57,6 @@ public class Student {
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
-    }
-
-    public int getAge() {
-        return Period.between(this.dateOfBirth, LocalDate.now()).getYears();
     }
 
     public Set<Subject> getSubjects() {

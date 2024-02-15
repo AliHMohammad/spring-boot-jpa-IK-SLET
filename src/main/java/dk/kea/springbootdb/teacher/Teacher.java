@@ -25,12 +25,6 @@ public class Teacher {
     @OneToMany(mappedBy = "teacher")
     private Set<Subject> subjects = new HashSet<>();
 
-    @Transient
-    private int age;
-
-    public int getAge() {
-        return Period.between(this.dateOfBirth, LocalDate.now()).getYears();
-    }
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
